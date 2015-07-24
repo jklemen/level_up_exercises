@@ -6,13 +6,8 @@ class DinoTest
   attr_accessor :dinodex
 
   def initialize(filenames)
-    file1 = 'dinodex.csv'
-    file2 = 'african_dinosaur_export.csv'
-
-    dinos1 = DinoParse.new(file1).dinos
-    dinos2 = DinoParse.new(file2).dinos
-
-    @dinodex = Dinodex.new(dinos1 + dinos2)
+    dino_parse = DinoParse.new(filenames)
+    @dinodex = Dinodex.new(dino_parse.dinos)
   end
 
   def horizontal_rule
@@ -52,7 +47,7 @@ class DinoTest
   def test4
     case_str = "Grab only big (> 2 tons) or small dinosaurs."
 
-    query = dinodex.greater_than('weight', '4000')
+    query = dinodex.big
     execute(case_str, query)
   end
 
@@ -69,8 +64,7 @@ class DinoTest
   def test6
     case_str = "Another example of chaining."
 
-    query = dinodex.like('name', 'saurus')
-            .greater_or_equal('weight', '10000')
+    query = dinodex.like('name', 'saurus').big
     execute(case_str, query)
   end
 
@@ -98,5 +92,5 @@ class DinoTest
   end
 end
 
-DinoTest.new.test_all
+DinoTest.new(['dinodex.csv', 'african_dinosaur_export.csv']).test_all
 # DONE

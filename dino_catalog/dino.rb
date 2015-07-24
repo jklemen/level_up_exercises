@@ -25,4 +25,33 @@ class Dino
       output_str << "#{formatted_attribute}#{formatted_value}\n"
     end
   end
+
+  def big?
+    weight.to_i >= 4001
+  end
+
+  def small?
+    !big?
+  end
+
+  def equal?(field, compare_val)
+    send(field).downcase == compare_val.downcase
+  end
+
+  def not_equal?(field, compare_val)
+    !equal?(field, compare_val)
+  end
+
+  def like?(field, compare_val)
+    dino_val = send(field)
+    if dino_val.nil? || compare_val.nil?
+      dino_val.nil? && compare_val.nil?
+    else
+      !!(dino_val.downcase =~ /#{compare_val.downcase}/)
+    end
+  end
+
+  def not_like?(field, compare_val)
+    !like?(field, compare_val)
+  end
 end

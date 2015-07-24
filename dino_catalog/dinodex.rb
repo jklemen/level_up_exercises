@@ -1,10 +1,8 @@
 require 'json'
 require './dino.rb'
-require './dino_compare.rb'
 
 class Dinodex
-  OPERATIONS = %w(less_than greater_than equal not_equal)
-  OPERATIONS += %w(less_or_equal greater_or_equal like not_like)
+  OPERATIONS = %w(equal not_equal big small like not_like)
 
   attr_accessor :dinos
 
@@ -18,11 +16,9 @@ class Dinodex
 
   def method_missing(name, *args, &block) 
     return unless OPERATIONS.include?(name.to_s)
-    return unless args.count == 2
 
     match = @dinos.select do |dino|
-      new_args = [dino.send(args[0]), args[1]]
-      DinoCompare.send("#{name}?", *new_args)
+      dino.send("#{name}?", *args)
     end
     Dinodex.new(match)
   end
@@ -35,7 +31,7 @@ class Dinodex
 
   def sort(field)
     sorted = @dinos.sort do |a, b|
-      DinoCompare.compare(a, field, b.send(field))
+      a.send(field) <=> b.send(field)
     end
     Dinodex.new(sorted)
   end

@@ -5,9 +5,11 @@ require './dino.rb'
 class DinoParse
   attr_reader :dinos
 
-  def initialize(dinofile)
-    dino_data = parse(dinofile)
-    @dinos = dino_data.map { |attribute_hash| Dino.new(attribute_hash) }
+  def initialize(dinofiles)
+    @dinos = dinofiles.inject([]) do |dinos, dinofile|
+      dino_data = parse(dinofile)
+      dinos + dino_data.map { |attribute_hash| Dino.new(attribute_hash) }
+    end
   end
 
   private
@@ -21,7 +23,7 @@ class DinoParse
     dino['weight'] = dino['weight_in_lbs'] || dino['weight']
     dino['name'] = dino['name'] || dino['genus']
 
-    new_diet = (dino['carnivore'] ? 'Carnivore' : "Non-Carnivore")
+    new_diet = (dino['carnivore'] ? 'Carnivore' : 'Herbivore')
     dino['diet'] = dino['diet'] || new_diet
     dino['continent'] = dino['continent'] || 'Africa'
 
