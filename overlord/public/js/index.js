@@ -131,15 +131,18 @@ function enter_code(event) {
   $.get('/entercode', {'code' : code }, function(data) {
     if(!data['success']) {
       $('#code-flash').html(data['attempts_remain'] + " attempts remain.");
+      return;
     }
-
+    var text = $('.footer-section p').html();
     if(data['state'] == 'armed') {
+      text = text.replace('arm', 'disarm');
       $('.bomb').removeClass('disarmed')
       $('input[type="button"]').val('Disarm');
       if(!ticker)
         ticker = setInterval(tick, 1000);
     }
     else if(data['state'] == 'disarmed'){
+      text = text.replace('disarm', 'arm');
       $('.bomb').addClass('disarmed');
       $('input[type="button"]').val('Arm');
       clearInterval(ticker);
@@ -148,6 +151,7 @@ function enter_code(event) {
     else if(data['state'] == 'detonated') {
       detonate();
     }
+    $('.footer-section p').html(text);
     $('#password').val('');
   });
 }
